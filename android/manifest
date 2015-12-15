@@ -1,0 +1,19 @@
+#
+# this is your module manifest and used by Titanium
+# during compilation, packaging, distribution, etc.
+#
+version: 1.0.0
+apiversion: 2
+architectures: armeabi armeabi-v7a x86
+description: tiintercomandroid
+author: Jerod Fritz
+license: Specify your license
+copyright: Copyright (c) 2015 by Your Company
+respackage: io.intercom.android.sdk
+
+# these should not be edited
+name: tiintercomandroid
+moduleid: ti.intercom.android
+guid: 0b101e54-49d1-4689-bdef-b8d2d334e500
+platform: android
+minsdk: 5.1.1.GA
