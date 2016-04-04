@@ -8,6 +8,9 @@
  */
 package ti.intercom.android;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.appcelerator.kroll.KrollDict;
 import org.appcelerator.kroll.KrollModule;
 import org.appcelerator.kroll.annotations.Kroll;
@@ -60,6 +63,18 @@ public class TiintercomandroidModule extends KrollModule
   }
 
   @Kroll.method
+  public void registerUnidentifiedUser() {
+	Intercom.client().registerUnidentifiedUser();
+    Log.d(LCAT, "Intercom : registerUnidentifiedUser();");
+  }
+  
+  @Kroll.method
+  public void registerUserWithUserID(String userid) {
+    Intercom.client().registerIdentifiedUser(new Registration().withUserId(userid));
+    Log.d(LCAT, "Intercom : registerUserWithUserID() : " + userid);
+  }
+
+  @Kroll.method
   public void registerUserWithEmail(String email) {
     Intercom.client().registerIdentifiedUser(new Registration().withEmail(email));
     Log.d(LCAT, "Intercom : registerUserWithEmail() : " + email);
@@ -70,6 +85,34 @@ public class TiintercomandroidModule extends KrollModule
     Intercom.client().displayConversationsList();
     Log.d(LCAT, "Intercom : presentConversationList()");
   }
+  
+  @Kroll.method
+  public void presentMessageComposer() {
+    Intercom.client().displayMessageComposer();
+    Log.d(LCAT, "Intercom : presentMessageComposer()");
+  }
+  
+  @Kroll.method
+  public void logEventWithUserIDAndData(String event_name, String created_at, String user_id) {
+	  Map eventData = new HashMap(); 
+	  eventData.put("event_name", event_name); 
+	  eventData.put("created_at", created_at);
+	  eventData.put("user_id", user_id);
+	  Intercom.client().logEvent(event_name, eventData);
+	  Log.d(LCAT, "Intercom : logEventWithNameAndData()");
+  }
+  
+  @Kroll.method
+  public void logEventWithEmailAndData(String event_name, String created_at, String email) {
+	  Map eventData = new HashMap(); 
+	  eventData.put("event_name", event_name); 
+	  eventData.put("created_at", created_at);
+	  eventData.put("email", email);
+	  Intercom.client().logEvent(event_name, eventData);
+	  Log.d(LCAT, "Intercom : logEventWithEmailAndData()");
+  }
+  
+  
 
 }
 
