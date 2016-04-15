@@ -32,6 +32,19 @@ exports.endSession = function() {
 exports.openIntercom = function() {
   TiIntercom.presentConversationList();
 };
+
+exports.logEventWithNameAndData = function(eventName, data /* 'event_name', { msg: 'hi' } */) {
+  TiIntercom.logEventWithNameAndData(eventName, data);
+};
+
+exports.updateUserWithAttributes = function(data /* { fname: 'John', lname: 'Doe' } */) {
+  TiIntercom.updateUserWithAttributes(data);
+};
+
+exports.setDeviceToken = function(token, appicon /* 'device-token', Ti.App.Android.R.drawable.appicon */) {
+  TiIntercom.setDeviceToken(token, appicon);
+};
+
 ```
 
 Author
