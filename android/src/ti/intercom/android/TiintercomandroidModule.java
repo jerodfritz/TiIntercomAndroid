@@ -112,7 +112,23 @@ public class TiintercomandroidModule extends KrollModule
 	  Log.d(LCAT, "Intercom : logEventWithEmailAndData()");
   }
   
+  @Kroll.method
+  public void logEventWithNameAndData(String event_name, HashMap eventData) {
+	  Intercom.client().logEvent(event_name, eventData);
+	  Log.d(LCAT, "Intercom : logEventWithNameAndData()");
+  }
   
+  @Kroll.method
+  public void updateUserWithAttributes(HashMap userData) {
+	  Intercom.client().updateUser(userData);
+	  Log.d(LCAT, "Intercom : updateUserWithAttributes()");
+  }
+  
+  @Kroll.method
+  public void setDeviceToken(String token, int ic_push_logo) {
+	  Intercom.client().setupGCM(token, ic_push_logo);
+	  Log.d(LCAT, "Intercom : setDeviceToken()");
+  }
 
 }
 
