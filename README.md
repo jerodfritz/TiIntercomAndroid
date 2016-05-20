@@ -2,14 +2,14 @@
 
 Integrate Intercom.io with Appcelerator.  iOS module available here https://github.com/markive/TiIntercom . Tested with 5.1.1GA SDK
 
-Example
+### Example
 ```
 var TiIntercom = require('intercom');
 TiIntercom.initialize(<API KEY>,<APP ID>);
 TiIntercom.startSession("jerodfritz@gmail.com");
 ```
 
-/lib/intercom.js
+### /lib/intercom.js
 ```
 var TiIntercom = require('ti.intercom.android');
 
@@ -47,14 +47,43 @@ exports.setDeviceToken = function(token, appicon /* 'device-token', Ti.App.Andro
 
 ```
 
-Author
-========
+### tiapp.xml changes for Android GCM support
+```
+    <android xmlns:android="http://schemas.android.com/apk/res/android">
+        <manifest>
+            <application>
+                <service
+                    android:name="io.intercom.android.sdk.gcm.GcmIntentService"
+                    android:enabled="false" />
 
+                <!-- GCM setup -->
+                <receiver
+                    android:name="io.intercom.android.sdk.gcm.GcmBroadcastReceiver"
+                    android:enabled="false"
+                    android:permission="com.google.android.c2dm.permission.SEND" >
+                    <intent-filter>
+                        <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+                        <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
+
+                        <category android:name="io.intercom.intercomsdk.gcm" />
+                    </intent-filter>
+                </receiver>
+
+                <meta-data
+                    android:name="com.google.android.gms.version"
+                    android:value="@integer/google_play_services_version" />
+
+            </application>
+        </manifest>    
+    </android>
+```
+
+#### Author
 Jerod
 (jerodfritz@gmail.com)
 
 
-## License
+#### License
 
     The MIT License (MIT) Copyright © 2015
 
