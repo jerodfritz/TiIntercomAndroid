@@ -1,0 +1,1 @@
+"/Users/jerodfritz/Documents/Appcelerator_Studio_Workspace/tiintercomandroid/android/src/ti/intercom/android/TiintercomandroidModule.java"

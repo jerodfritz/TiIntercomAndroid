@@ -17,6 +17,7 @@ import org.appcelerator.kroll.annotations.Kroll;
 import org.appcelerator.titanium.TiApplication;
 import org.appcelerator.kroll.common.Log;
 import org.appcelerator.kroll.common.TiConfig;
+import org.appcelerator.titanium.util.TiRHelper;
 
 import io.intercom.android.sdk.Intercom;
 import io.intercom.android.sdk.identity.Registration;
@@ -67,7 +68,7 @@ public class TiintercomandroidModule extends KrollModule
 	Intercom.client().registerUnidentifiedUser();
     Log.d(LCAT, "Intercom : registerUnidentifiedUser();");
   }
-  
+
   @Kroll.method
   public void registerUserWithUserID(String userid) {
     Intercom.client().registerIdentifiedUser(new Registration().withUserId(userid));
@@ -85,50 +86,56 @@ public class TiintercomandroidModule extends KrollModule
     Intercom.client().displayConversationsList();
     Log.d(LCAT, "Intercom : presentConversationList()");
   }
-  
+
   @Kroll.method
   public void presentMessageComposer() {
     Intercom.client().displayMessageComposer();
     Log.d(LCAT, "Intercom : presentMessageComposer()");
   }
-  
+
   @Kroll.method
   public void logEventWithUserIDAndData(String event_name, String created_at, String user_id) {
-	  Map eventData = new HashMap(); 
-	  eventData.put("event_name", event_name); 
+	  Map eventData = new HashMap();
+	  eventData.put("event_name", event_name);
 	  eventData.put("created_at", created_at);
 	  eventData.put("user_id", user_id);
 	  Intercom.client().logEvent(event_name, eventData);
 	  Log.d(LCAT, "Intercom : logEventWithNameAndData()");
   }
-  
+
   @Kroll.method
   public void logEventWithEmailAndData(String event_name, String created_at, String email) {
-	  Map eventData = new HashMap(); 
-	  eventData.put("event_name", event_name); 
+	  Map eventData = new HashMap();
+	  eventData.put("event_name", event_name);
 	  eventData.put("created_at", created_at);
 	  eventData.put("email", email);
 	  Intercom.client().logEvent(event_name, eventData);
 	  Log.d(LCAT, "Intercom : logEventWithEmailAndData()");
   }
-  
+
   @Kroll.method
   public void logEventWithNameAndData(String event_name, HashMap eventData) {
 	  Intercom.client().logEvent(event_name, eventData);
 	  Log.d(LCAT, "Intercom : logEventWithNameAndData()");
   }
-  
+
   @Kroll.method
   public void updateUserWithAttributes(HashMap userData) {
 	  Intercom.client().updateUser(userData);
 	  Log.d(LCAT, "Intercom : updateUserWithAttributes()");
   }
-  
+
   @Kroll.method
   public void setDeviceToken(String token, int ic_push_logo) {
-	  Intercom.client().setupGCM(token, ic_push_logo);
-	  Log.d(LCAT, "Intercom : setDeviceToken()");
+		if(ic_push_logo > 0){
+			Log.d(LCAT, "Intercom : setDeviceToken(" + token + ", "+ ic_push_logo +")");
+			Intercom.client().setupGCM(token, ic_push_logo);
+		} else {
+			Log.d(LCAT, "Intercom : setDeviceToken(" + token + ")");
+			//Intercom.client().setupGCM(token, TiRHelper.getResource("R.drawable.intercomsdk_default_push"));
+			Intercom.client().setupGCM(token, 0x7f02003f);
+		}
+
   }
 
 }
-
