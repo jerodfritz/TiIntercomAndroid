@@ -2,14 +2,14 @@
 # this is your module manifest and used by Titanium
 # during compilation, packaging, distribution, etc.
 #
-version: 1.0.4
+version: 1.0.5
 apiversion: 2
 architectures: armeabi armeabi-v7a x86
 description: tiintercomandroid
 author: Jerod Fritz
 license: Specify your license
 copyright: Copyright (c) 2015 by Your Company
-respackage: io.intercom.android.sdk 
+respackage: io.intercom.android.sdk
 
 # these should not be edited
 name: tiintercomandroid

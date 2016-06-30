@@ -1,6 +1,6 @@
-### Intercom android module for Intercom Android SDK version 1.1.21
+### Intercom android module for Intercom Android SDK version 1.1.20
 
-Integrate Intercom.io with Appcelerator.  iOS module available here https://github.com/markive/TiIntercom . Tested with 5.1.1GA SDK
+Integrate Intercom.io with Appcelerator.  iOS module available here https://github.com/markive/TiIntercom . Tested with Alloy and 5.1.1GA SDK
 
 ### Example
 ```
@@ -81,47 +81,70 @@ exports.setDeviceToken = function(token, appicon /* 'device-token', Ti.App.Andro
 ### IMPORTANT : create hooks folder and intercom.js file in the module for Android GCM support
 You need to create a hooks folder with a .js file inside the module directory with the following contents.  This makes sure the additional R values are added for intercom during compile.  If someone can tell me how to update the ant build script to create this automatically in the compiled dist please let me know otherwise you need to do this manually after compile.
 
-Create the following file:
+Create the following file if not already included in the distribution:
 
-FILE: /modules/android/ti.intercom.android/1.0.4/hooks/intercom.js
+FILE: /modules/android/ti.intercom.android/XX.XX.XX/hooks/intercom.js
 ```
 exports.cliVersion = '>=3.X';
 
 exports.init = function(logger, config, cli, appc) {
-  cli.on('build.android.aapt', {
-    pre : function(data, next) {
-      var args = data.args[1];
-      if (args.indexOf('--auto-add-overlay') < 0) {
-        args.push('--auto-add-overlay');
-      }
+    cli.on('build.android.aapt', {
+        pre: function(data, next) {
+            var args = data.args[1],
+                i18n = appc.i18n(__dirname),
+                __ = i18n.__,
+                path = require('path'),
+                appDir = path.join(cli.argv['project-dir'], 'app'),
+                find = function(items, f) {
+                    for (var i = 0; i < items.length; i++) {
+                        var item = items[i];
+                        if (f(item)) return item;
+                    };
+                },
+                module = false;
+            if (args.indexOf('--auto-add-overlay') < 0) {
+                args.push('--auto-add-overlay');
+            }
+            for(var i in cli.tiapp.modules) {
+                if (cli.tiapp.modules[i].id == "ti.intercom.android") {
+                    module = cli.tiapp.modules[i];
+                    break;
+                }
+            }
+            if (!module) {
+                logger.error(__('Unable to determine Android Intercom module version.  You must specify the module version specfically in your tiapp.xml'));
+                process.exit(1);
+            } else {
+                var externalLibraries = [{
+                    javaClass: 'io.intercom.android.sdk.gcm',
+                    resPath: appDir + '/../modules/android/ti.intercom.android/' + module.version + '/platform/android/gcm-res'
+                }];
+                logger.info(__("Add Intercom GCM External Libraries" + JSON.stringify(externalLibraries)));
 
-      var externalLibraries = [{
-        javaClass : 'io.intercom.android.sdk.gcm',
-        resPath : '/Users/jerodfritz/Appcelerator/Prspctr/modules/android/ti.intercom.android/1.0.4/platform/android/gcm-res'
-      }];
-      console.log("Add Intercom GCM External Libraries", JSON.stringify(externalLibraries));
+                // --extra-packages can be defined just once
+                if (args.indexOf('--extra-packages') < 0) {
+                    args.push('--extra-packages');
+                    args.push('');
+                }
+                var namespaceIndex = args.indexOf('--extra-packages') + 1;
 
-      // --extra-packages can be defined just once
-      if (args.indexOf('--extra-packages') < 0) {
-        args.push('--extra-packages');
-        args.push('');
-      }
-      var namespaceIndex = args.indexOf('--extra-packages') + 1;
+                externalLibraries.forEach(function(lib) {
+                    if (args[namespaceIndex].indexOf(lib.javaClass) < 0) {
+                        args[namespaceIndex].length && (args[namespaceIndex] += ':');
+                        args[namespaceIndex] += lib.javaClass;
+                    }
+                    if (args.indexOf(lib.resPath) < 0) {
+                        args.push('-S');
+                        args.push(lib.resPath);
+                    }
+                });
+                next(null, data);
+            }
 
-      externalLibraries.forEach(function(lib) {
-        if (args[namespaceIndex].indexOf(lib.javaClass) < 0) {
-          args[namespaceIndex].length && (args[namespaceIndex] += ':');
-          args[namespaceIndex] += lib.javaClass;
         }
-        if (args.indexOf(lib.resPath) < 0) {
-          args.push('-S');
-          args.push(lib.resPath);
-        }
-      });
-      next(null, data);
-    }
-  });
+    });
 };
+
 ```
 
 
